@@ -1,9 +1,9 @@
 "use client";
 
-import { useDeferredValue } from "react";
 import { ArticleCard } from "@/components/article/article-card";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
+import { SearchField } from "@/components/filters/search-field";
 import { LoadingState } from "@/components/common/loading-state";
 import { Panel } from "@/components/common/panel";
 import { useToast } from "@/components/common/toast-provider";
@@ -67,7 +67,6 @@ export function NewsDashboard() {
   const localState = useLocalArticleState();
   const { showToast } = useToast();
   const { data, isLoading, error, reload } = useFeed(query.period);
-  const deferredQuery = useDeferredValue(query.q);
 
   const topArticles = mergeArticlesWithLocalState(
     data?.hnArticles ?? [],
@@ -80,7 +79,7 @@ export function NewsDashboard() {
   const savedArticles = buildSavedArticles(localState.store);
 
   const visibleTopArticles = sortAndFilterTopArticles(topArticles, {
-    query: deferredQuery,
+    query: query.q,
     periodDays: query.period,
     sortBy: query.sort,
     readFilter: query.readFilter,
@@ -89,7 +88,7 @@ export function NewsDashboard() {
   const visibleOfficialArticles = sortAndFilterOfficialArticles(
     officialArticles,
     {
-      query: deferredQuery,
+      query: query.q,
       periodDays: query.period,
       source: query.officialSource,
       readFilter: query.readFilter,
@@ -97,7 +96,7 @@ export function NewsDashboard() {
   );
 
   const visibleSavedArticles = sortAndFilterSavedArticles(savedArticles, {
-    query: deferredQuery,
+    query: query.q,
     periodDays: query.period,
     readFilter: query.readFilter,
   });
@@ -153,11 +152,10 @@ export function NewsDashboard() {
           <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.4fr)_repeat(4,minmax(0,0.72fr))]">
             <label className="flex min-w-0 flex-col gap-2">
               <span className="text-sm font-medium text-ink/80">検索</span>
-              <input
+              <SearchField
                 value={query.q}
-                onChange={(event) => query.setQuery(event.target.value)}
+                onCommit={query.setQuery}
                 placeholder="タイトルで検索"
-                className="h-11 min-w-0 rounded-2xl border border-line bg-white px-4 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
             </label>
 
