@@ -115,9 +115,10 @@ export function NewsDashboard() {
   const lastUpdatedLabel = data?.lastUpdated
     ? formatDateTime(data.lastUpdated)
     : "未取得";
+  const articleGridClass = "grid-cols-1 gap-5 md:grid-cols-2";
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-7xl min-w-0 flex-col overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8">
+    <main className="mx-auto flex min-h-screen w-full max-w-7xl min-w-0 flex-col overflow-x-hidden px-4 pb-[calc(8.75rem+env(safe-area-inset-bottom))] pt-6 sm:px-6 sm:pb-40 lg:px-8">
       <section className="mb-5 min-w-0 rounded-[28px] border border-line/90 bg-card/90 p-5 shadow-panel backdrop-blur sm:p-7">
         <div className="flex min-w-0 flex-col gap-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -149,10 +150,7 @@ export function NewsDashboard() {
               />
             </div>
           </div>
-
-          <AppTabs activeTab={query.tab} onChange={query.setTab} />
-
-          <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.4fr)_repeat(4,minmax(0,0.7fr))]">
+          <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.4fr)_repeat(4,minmax(0,0.72fr))]">
             <label className="flex min-w-0 flex-col gap-2">
               <span className="text-sm font-medium text-ink/80">検索</span>
               <input
@@ -242,7 +240,7 @@ export function NewsDashboard() {
             description={tabEmptyCopy[query.tab].description}
           />
         ) : (
-          <div className="grid min-w-0 gap-4">
+          <div className={`grid min-w-0 ${articleGridClass}`}>
             {activeArticles.map((article) => (
               <ArticleCard
                 key={article.id}
@@ -266,6 +264,8 @@ export function NewsDashboard() {
           </div>
         )}
       </Panel>
+
+      <AppTabs activeTab={query.tab} onChange={query.setTab} />
     </main>
   );
 }

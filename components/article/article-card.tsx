@@ -20,8 +20,8 @@ export function ArticleCard({
   const summary = useArticleSummary(article);
 
   return (
-    <article className="w-full min-w-0 max-w-full rounded-[24px] border border-line bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
-      <div className="flex min-w-0 flex-col gap-4">
+    <article className="h-full w-full min-w-0 max-w-full rounded-[24px] border border-line bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
+      <div className="flex h-full min-w-0 flex-col gap-4">
         <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs font-medium">
           <Badge>{article.sourceLabel}</Badge>
           <Badge tone={article.isRead ? "default" : "accent"}>
@@ -55,7 +55,7 @@ export function ArticleCard({
           ) : null}
         </div>
 
-        <div className="flex min-w-0 flex-wrap gap-3">
+        <div className="mt-auto flex min-w-0 flex-wrap gap-3">
           <button
             type="button"
             onClick={() => onToggleSaved(article)}
