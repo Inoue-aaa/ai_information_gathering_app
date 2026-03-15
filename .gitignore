@@ -3,4 +3,6 @@ node_modules
 dist
 out
 .vercel
+.env.local
+.env*.local
 *.log

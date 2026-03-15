@@ -1,5 +1,7 @@
 "use client";
 
+import { ArticleSummary } from "@/components/article/article-summary";
+import { useArticleSummary } from "@/hooks/use-article-summary";
 import type { Article } from "@/lib/types/article";
 import { formatDateTime, formatRelativeAge } from "@/lib/utils/date";
 
@@ -15,6 +17,7 @@ export function ArticleCard({
   onCopyUrl: (article: Article) => Promise<void>;
 }) {
   const displayTitle = article.title?.trim() || "タイトル未取得";
+  const summary = useArticleSummary(article);
 
   return (
     <article className="w-full min-w-0 max-w-full rounded-[24px] border border-line bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
@@ -73,7 +76,26 @@ export function ArticleCard({
           >
             URLをコピー
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              void summary.handleSummaryAction();
+            }}
+            disabled={summary.isLoading}
+            className="rounded-full border border-line bg-white px-4 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent disabled:cursor-wait disabled:opacity-60"
+          >
+            {summary.actionLabel}
+          </button>
         </div>
+
+        {summary.isExpanded ? (
+          <ArticleSummary
+            summaryEntry={summary.summaryEntry}
+            isLoading={summary.isLoading}
+            errorMessage={summary.errorMessage}
+            storageWarning={summary.storageWarning}
+          />
+        ) : null}
       </div>
     </article>
   );

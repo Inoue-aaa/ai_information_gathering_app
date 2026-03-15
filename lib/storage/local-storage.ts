@@ -1,10 +1,12 @@
 import type { Article, SavedArticleSnapshot } from "@/lib/types/article";
-import type { LocalArticleStore } from "@/lib/types/storage";
+import type { LocalArticleStore, SummaryStore } from "@/lib/types/storage";
+import type { ArticleSummary } from "@/lib/types/summary";
 
 const STORAGE_KEYS = {
   saved: "ai-news:saved",
   read: "ai-news:read",
-  savedSnapshots: "ai-news:savedSnapshots"
+  savedSnapshots: "ai-news:savedSnapshots",
+  summaries: "ai-news:summaries"
 } as const;
 
 export function createDefaultLocalArticleStore(): LocalArticleStore {
@@ -96,6 +98,43 @@ function persistLocalArticleStore(store: LocalArticleStore) {
     STORAGE_KEYS.savedSnapshots,
     JSON.stringify(store.savedSnapshots)
   );
+}
+
+export function readSummaryStore(): SummaryStore {
+  return safeReadRecord<ArticleSummary>(STORAGE_KEYS.summaries);
+}
+
+export function readArticleSummary(articleId: string): ArticleSummary | null {
+  const summaries = readSummaryStore();
+  return summaries[articleId] ?? null;
+}
+
+export function saveArticleSummary(summary: ArticleSummary) {
+  if (typeof window === "undefined") {
+    return {
+      ok: false as const,
+      error: "storage_unavailable"
+    };
+  }
+
+  try {
+    const summaries = readSummaryStore();
+    const nextStore: SummaryStore = {
+      ...summaries,
+      [summary.articleId]: summary
+    };
+
+    window.localStorage.setItem(STORAGE_KEYS.summaries, JSON.stringify(nextStore));
+
+    return {
+      ok: true as const
+    };
+  } catch {
+    return {
+      ok: false as const,
+      error: "storage_failed"
+    };
+  }
 }
 
 function safeReadRecord<T = string>(key: string): Record<string, T> {
