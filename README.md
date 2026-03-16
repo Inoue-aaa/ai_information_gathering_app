@@ -41,6 +41,26 @@ GEMINI_API_KEY=your_gemini_api_key_here
 - 生成結果は `localStorage` に保存し、再表示時はキャッシュを優先
 - 初期モデルは `gemini-2.5-flash-lite`
 
+## テスト
+
+```bash
+npm run test
+```
+
+一度だけ実行する場合:
+
+```bash
+npm run test:run
+```
+
+Vitest + React Testing Library で、以下を優先してテストしています。
+
+- 記事一覧の filter / sort utilities
+- localStorage の保存 / 既読 / 要約キャッシュ
+- 要約エラーメッセージ変換
+- `useLocalArticleState` の主要更新
+- 記事カードの主要表示とボタン
+
 ## 将来の拡張ポイント
 
 - `lib/services/feed-service.ts`

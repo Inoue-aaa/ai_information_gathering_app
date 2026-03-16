@@ -16,6 +16,7 @@ export function SearchField({
   const [inputValue, setInputValue] = useState(value);
   const [isComposing, setIsComposing] = useState(false);
   const skipDebounceRef = useRef(false);
+  const debounceTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isComposing) {
@@ -33,16 +34,26 @@ export function SearchField({
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
+    debounceTimeoutRef.current = window.setTimeout(() => {
       onCommit(inputValue);
     }, SEARCH_DEBOUNCE_MS);
 
-    return () => window.clearTimeout(timeoutId);
+    return () => {
+      if (debounceTimeoutRef.current !== null) {
+        window.clearTimeout(debounceTimeoutRef.current);
+        debounceTimeoutRef.current = null;
+      }
+    };
   }, [inputValue, isComposing, onCommit, value]);
 
   function commitImmediately(nextValue: string) {
     if (nextValue === value) {
       return;
+    }
+
+    if (debounceTimeoutRef.current !== null) {
+      window.clearTimeout(debounceTimeoutRef.current);
+      debounceTimeoutRef.current = null;
     }
 
     skipDebounceRef.current = true;

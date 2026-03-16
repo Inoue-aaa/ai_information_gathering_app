@@ -137,7 +137,7 @@ function getActionLabel({
   return "要約する";
 }
 
-function toUserFacingMessage(code?: SummaryErrorCode, fallback?: string) {
+export function toUserFacingMessage(code?: SummaryErrorCode, fallback?: string) {
   if (code === "rate_limited" || code === "provider_unavailable") {
     return "現在は要約を利用できません。時間をおいて再度お試しください（利用上限に達した可能性があります）。";
   }
