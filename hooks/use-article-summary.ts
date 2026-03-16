@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { readArticleSummary, saveArticleSummary } from "@/lib/storage/local-storage";
+import {
+  readArticleSummary,
+  saveArticleSummary,
+} from "@/lib/storage/local-storage";
 import type { Article } from "@/lib/types/article";
 import type {
   ArticleSummary,
@@ -67,9 +70,7 @@ export function useArticleSummary(article: Article) {
       const payload = (await response.json()) as SummarizeApiResponse;
 
       if (!response.ok || !payload.ok) {
-        const error = payload.ok
-          ? null
-          : payload.error;
+        const error = payload.ok ? null : payload.error;
 
         setErrorCode(error?.code ?? "generation_failed");
         setErrorMessage(toUserFacingMessage(error?.code, error?.message));
@@ -100,7 +101,12 @@ export function useArticleSummary(article: Article) {
     errorCode,
     storageWarning,
     hasSummary: Boolean(summaryEntry?.summary),
-    actionLabel: getActionLabel({ summaryEntry, isExpanded, isLoading, errorCode }),
+    actionLabel: getActionLabel({
+      summaryEntry,
+      isExpanded,
+      isLoading,
+      errorCode,
+    }),
     handleSummaryAction,
   };
 }
@@ -131,12 +137,9 @@ function getActionLabel({
   return "要約する";
 }
 
-function toUserFacingMessage(
-  code?: SummaryErrorCode,
-  fallback?: string
-) {
+function toUserFacingMessage(code?: SummaryErrorCode, fallback?: string) {
   if (code === "rate_limited" || code === "provider_unavailable") {
-    return "現在は要約を利用できません。";
+    return "現在は要約を利用できません。時間をおいて再度お試しください（利用上限に達した可能性があります）。";
   }
 
   if (code === "missing_api_key") {
